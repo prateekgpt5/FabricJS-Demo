@@ -20,10 +20,8 @@
         $scope.generateCanvas = function () {
             $scope.showCanvas = true;
             $scope.jsonDataforCanvas();
-            canvas1 = new fabric.Canvas('canvas1',{width:600,height:400});
-            webgl1 = canvas1.getContext('webgl');
-            canvas2 = new fabric.Canvas('canvas2',{width:600,height:400});
-            webgl2 = canvas2.getContext('webgl');
+            canvas1 = new fabric.Canvas('canvas1', { width: 600, height: 400 });
+            canvas2 = new fabric.Canvas('canvas2', { width: 600, height: 400 });
         }
 
         $scope.insertIntoCanvas = function (selectedCanvas, selectedObject) {
@@ -45,15 +43,10 @@
                 console.log("ID is odd : " + object[0].thumbnailUrl);
 
                 fabric.Image.fromURL(object[0].thumbnailUrl, function (image) {
-                    // add filter
+                    // added cross-origin parameter for image
                     image.crossOrigin = "Anonymous";
 
-                    var img1 = image.set({ left: 100, top: 100 ,width:250,height:250});
-
-                    //img1.filters.push(new fabric.Image.filters.Grayscale());
-                    // apply filters and re-render canvas when done
-                    //img1.applyFilters();
-                    // add image onto canvas (it also re-render the canvas)
+                    var img1 = image.set({ left: 100, top: 100, width: 250, height: 250 });
                     if (selectedCanvas == "canvas1")
                         canvas1.add(img1);
                     else if (selectedCanvas == "canvas2")
@@ -61,28 +54,47 @@
                 });
             } else if (parseInt(object[0].id) % 2 == 0 && parseInt(object[0].albumId) < 100) {
                 console.log("ID is even : " + object[0].title);
-                var titleText = new fabric.Text(object[0].title, {
-                    fontFamily: 'Comic Sans'
-                });
+
+                var titleText = new fabric.Text(object[0].title, { fontFamily: 'Comic Sans', left: 100, top: 100 });
                 if (selectedCanvas == "canvas1")
                     canvas1.add(titleText);
                 else if (selectedCanvas == "canvas2")
                     canvas2.add(titleText);
             } else if (parseInt(object[0].albumId) >= 0) {
                 console.log("Album ID is greater than 100 : " + object[0].url);
-                var urlText = new fabric.Text(object[0].title, {
-                    fontFamily: 'Comic Sans'
-                });
+
+                var urlText = new fabric.Text(object[0].title, { fontFamily: 'Comic Sans', left: 100, top: 100 });
                 if (selectedCanvas == "canvas1")
                     canvas1.add(urlText);
                 else if (selectedCanvas == "canvas2")
                     canvas2.add(urlText);
             }
         }
+
+        $(document).ready(function () {
+            var activeObject, initialCanvas;
+
+            canvas1.on('mouse:down', function () {
+                if (this.getActiveObject()) {
+                    // activeObject = $.extend({}, this.getActiveObject());
+                    // initialCanvas = this.lowerCanvasEl.id;
+                    // canvas1.moveTo(activeObject, 10);
+                    // canvas2.moveTo(activeObject, 10);
+                    // activeObject.moveTo(11);
+
+                    cloneObject();
+                }
+            });
+
+            function cloneObject() {
+                var object = canvas1.getActiveObject();
+                var mycopy = fabric.util.object.clone(object);
+
+                canvas2.add(mycopy);
+                canvas2.renderAll()
+                canvas1.renderAll();
+
+            }
+        });
     });
-    function requestCORSIfNotSameOrigin(img, url) {
-        if ((new URL(url)).origin !== window.location.origin) {
-            img.crossOrigin = "";
-        }
-    }
 })();
