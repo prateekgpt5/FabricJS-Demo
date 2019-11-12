@@ -9,58 +9,49 @@
     <link rel="stylesheet" href="../css/style.css">
     <script src="../lib/angular.js"></script>
     <script src="../lib/fabric.js"></script>
+    <script src="../js/app.js"></script>
 
 </head>
 
-<body>
+<body ng-app="FabricJSDemo" ng-controller="appCtrl">
     <!-- Generate Random Canvases Division -->
     <div class="text-center mt-3">
-        <button class="btn btn-primary">Generate Random Canvases</button>
+        <button class="btn btn-primary" ng-click="generateCanvas();">Generate Random Canvases</button>
     </div>
 
-    <div class="row col-md-12 mt-3 justify-content-center">
+    <div class="row col-md-12 mt-3 justify-content-center" ng-show="showCanvas">
         <!-- Select Object Division -->
         <div class="dropdown col-md-2 ml-5">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Dropdown
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button">Action</button>
-                <button class="dropdown-item" type="button">Another action</button>
-                <button class="dropdown-item" type="button">Something else here</button>
-            </div>
+            <label>Canvas Number</label>
+            <select class="form-control" ng-model="selectedCanvas" name="Select Canvas">
+                <option value="canvas1">Canvas 1</option>
+                <option value="canvas2">Canvas 2</option>
+            </select>
         </div>
 
         <!-- Select Canvas number Division -->
         <div class="dropdown col-md-2 ml-5">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Dropdown
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
-                <button class="dropdown-item" type="button">Action</button>
-                <button class="dropdown-item" type="button">Another action</button>
-                <button class="dropdown-item" type="button">Something else here</button>
-            </div>
+            <label>Select Object</label>
+            <select class="form-control" ng-model="selectedObject" name="Select Object">
+                <option value="{{data.id}}" ng-repeat="data in jsonData">{{data.id}} - {{data.title}}</option>
+            </select>
         </div>
 
         <!-- Insert to Canvas button Division -->
-        <div class="col-md-2 ml-5">
-            <button class="btn btn-primary">Insert into Canvas</button>
+        <div class="col-md-2 ml-5 custom-btn-margin">
+            <button class="btn btn-primary" ng-disabled="!showCanvas" ng-click="insertIntoCanvas(selectedCanvas, selectedObject)">Insert into Canvas</button>
         </div>
     </div>
 
     <!-- Canvas Division -->
-    <div class="mt-3">
+    <div class="mt-3" ng-show="showCanvas">
         <div class="row m-1 mb-0 justify-content-center">
             <label class="col-md-5 mb-0">Canvas 1</label>
             <label class="col-md-5 mb-0">Canvas 2</label>
         </div>
         <div class="row m-1 canvas-height justify-content-center">
-
-            <div class="col-md-5 border m-2"></div>
-            <div class="col-md-5 border m-2"></div>
+            <canvas id="canvas1" class="border m-2" style="width:50% !important;"></canvas>
+            <canvas id="canvas2" class="border m-2" style="width:50% !important;"></canvas>
         </div>
     </div>
 </body>
