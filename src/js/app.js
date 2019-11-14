@@ -28,6 +28,7 @@
 
         // Insert Object into the Canvas
         $scope.insertIntoCanvas = function (selectedCanvas, selectedObject) {
+            var object = [];
             if (selectedCanvas == null) {
                 alert("Please select a canvas to render the object.");
             }
@@ -37,42 +38,53 @@
             console.log("Selected Canvas : " + selectedCanvas);
             console.log("Selected Object : " + selectedObject);
 
-            var object = $scope.jsonData.filter(function (data) {
-                return data.id == selectedObject;
-            });
-            console.log(object[0]);
-
-            if (parseInt(object[0].id) % 2 != 0 && parseInt(object[0].albumId) < 100) {
-                console.log("ID is odd : " + object[0].thumbnailUrl);
-
-                fabric.Image.fromURL(object[0].thumbnailUrl, function (image) {
-                    // added cross-origin parameter for image
-                    image.crossOrigin = "Anonymous";
-
-                    var img1 = image.set({ left: 100, top: 100, width: 100, height: 100 });
-                    if (selectedCanvas == "canvas1")
-                        canvas1.add(img1);
-                    else if (selectedCanvas == "canvas2")
-                        canvas2.add(img1);
-                });
-            } else if (parseInt(object[0].id) % 2 == 0 && parseInt(object[0].albumId) < 100) {
-                console.log("ID is even : " + object[0].title);
-
-                var titleText = new fabric.Text(object[0].title, { fontFamily: 'Comic Sans', fontSize: 20, color: 'black', left: 100, top: 100 });
-                if (selectedCanvas == "canvas1")
-                    canvas1.add(titleText);
-                else if (selectedCanvas == "canvas2")
-                    canvas2.add(titleText);
-            } else if (parseInt(object[0].albumId) >= 0) {
-                console.log("Album ID is greater than 100 : " + object[0].url);
-
-                var urlText = new fabric.Text(object[0].title, { fontFamily: 'Comic Sans', fontSize: 20, color: 'black', left: 100, top: 100 });
-                if (selectedCanvas == "canvas1")
-                    canvas1.add(urlText);
-                else if (selectedCanvas == "canvas2")
-                    canvas2.add(urlText);
+            if (selectedObject == "first") {
+                object.push($scope.jsonData[0]);
+                object.push($scope.jsonData[1]);
+            } else if (selectedObject == "last") {
+                object.push($scope.jsonData[$scope.jsonData.length - 1]);
+                object.push($scope.jsonData[$scope.jsonData.length - 2]);
+            } else if (selectedObject == "random") {
+                var randomNumber = Math.floor((Math.random() * 5000) + 1);
+                console.log("Random Number : " + randomNumber);
+                object.push($scope.jsonData[randomNumber]);
             }
 
+            console.log(object);
+            for (var i = 0; i < object.length; i++) {
+
+                if (parseInt(object[i].id) % 2 != 0 && parseInt(object[i].albumId) < 100) {
+                    console.log("ID is odd : " + object[i].thumbnailUrl);
+
+                    fabric.Image.fromURL(object[i].thumbnailUrl, function (image) {
+                        // added cross-origin parameter for image
+                        image.crossOrigin = "Anonymous";
+
+                        var img1 = image.set({ left: 100, top: 100, width: 100, height: 100 });
+                        if (selectedCanvas == "canvas1")
+                            canvas1.add(img1);
+                        else if (selectedCanvas == "canvas2")
+                            canvas2.add(img1);
+                    });
+                } else if (parseInt(object[i].id) % 2 == 0 && parseInt(object[i].albumId) < 100) {
+                    console.log("ID is even : " + object[i].title);
+
+                    var titleText = new fabric.Text(object[i].title, { fontFamily: 'Comic Sans', fontSize: 20, color: 'black', left: 100, top: 100 });
+                    if (selectedCanvas == "canvas1")
+                        canvas1.add(titleText);
+                    else if (selectedCanvas == "canvas2")
+                        canvas2.add(titleText);
+                } else if (parseInt(object[i].albumId) >= 0) {
+                    console.log("Album ID is greater than 100 : " + object[i].url);
+
+                    var urlText = new fabric.Text(object[i].title, { fontFamily: 'Comic Sans', fontSize: 20, color: 'black', left: 100, top: 100 });
+                    if (selectedCanvas == "canvas1")
+                        canvas1.add(urlText);
+                    else if (selectedCanvas == "canvas2")
+                        canvas2.add(urlText);
+                }
+
+            }
             if ($scope.isCanvasBlank(document.getElementById('canvas1')) && $scope.isCanvasBlank(document.getElementById('canvas2'))) {
                 canvas1.on("object:moving", $scope.onObjectMoving);
                 canvas2.on("object:moving", $scope.onObjectMoving);

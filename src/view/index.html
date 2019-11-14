@@ -34,7 +34,9 @@
         <div class="dropdown col-md-2 ml-5">
             <label>Select Object</label>
             <select class="form-control" ng-model="selectedObject" name="Select Object">
-                <option value="{{data.id}}" ng-repeat="data in jsonData">{{data.id}} - {{data.title}}</option>
+                <option value="first">First 2 objects</option>
+                <option value="last">Last 2 objects</option>
+                <option value="random">Random Object</option>
             </select>
         </div>
 
